@@ -26,13 +26,19 @@ let budgetController = ( function() {
 	return {
 		addItem: function(type, des, val) {
 			let ID, newItem;
+
+			// Create unique ID
+
+			ID = data.allItems[type][data.allItems[type].length-1]+1;
+
+			
 			// Add new item to the data structure
 			if(type === 'exp') {
-				newItem = new Expenses(id, des, val);
+				newItem = new Expenses(ID, des, val);
 
 			}
 			else if(type === 'inc') {
-				newItem = new Incomes(id, des, val);
+				newItem = new Incomes(ID, des, val);
 			}
 
 			data.allItems[type].push(newItem);
