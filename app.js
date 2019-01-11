@@ -2,28 +2,46 @@
 
 let budgetController = ( function() {
 
-let Expenses = function(id, description, value) {
-	this.id = id;
-	this.description = description;
-	this.value = value;
-};
+	let Expenses = function(id, description, value) {
+		this.id = id;
+		this.description = description;
+		this.value = value;
+	};
 
-let Incomes = function(id, description, value) {
-	this.id = id;
-	this.description = description;
-	this.value = value;
-};
+	let Incomes = function(id, description, value) {
+		this.id = id;
+		this.description = description;
+		this.value = value;
+	};
 
-let data = {
-	allItems: {
-		exp: [],
-		inc: []
-	},
-	totals: {
-		exp: 0,
-		inc: 0
+	let data = {
+		allItems: {
+			exp: [],
+			inc: []
+		},
+		totals: {
+			exp: 0,
+			inc: 0
+		}
+	return {
+		addItem: function(type, des, val) {
+			let ID, newItem;
+			// Add new item to the data structure
+			if(type === 'exp') {
+				newItem = new Expenses(id, des, val);
+
+			}
+			else if(type === 'inc') {
+				newItem = new Incomes(id, des, val);
+			}
+
+			data.allItems[type].push(newItem);
+			return newItem;
+		}
 	}
 };
+
+
 })();
 
 
