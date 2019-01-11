@@ -14,7 +14,16 @@ let Incomes = function(id, description, value) {
 	this.value = value;
 };
 
-
+let data = {
+	allItems: {
+		exp: [],
+		inc: []
+	},
+	totals: {
+		exp: 0,
+		inc: 0
+	}
+};
 })();
 
 
