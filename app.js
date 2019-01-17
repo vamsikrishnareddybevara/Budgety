@@ -103,7 +103,12 @@ let UIController = ( function() {
 		inputValue: '.add__value',
 		inputButton: '.add__btn',
 		incomeContainer: '.income__list',
-		expensesContainer: '.expenses__list'
+		expensesContainer: '.expenses__list',
+		budgetLabel: '.budget__value',
+		incomeLabel: '.budget__income--value',
+		expensesLabel: '.budget__expenses--value',
+		percentageLabel: '.budget__expenses--percentage',
+		container: '.container'
 	}
  
 
@@ -116,7 +121,7 @@ let UIController = ( function() {
 			value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
 			};
 		},
-		addListitem: function(obj, type) {
+		addListItem: function(obj, type) {
 			let html, newHtml, element;
 			// Create HTML string with placeholder
 
@@ -139,13 +144,26 @@ let UIController = ( function() {
 
 		},
 		clearFields: function() {
-			let fields, fieldsArr;
-			fields = document.querySelectorAll(DOMStrings.inputDescription+ ', ' + DOMStrings.inputValue);
-			fieldsArr = Array.prototype.slice.call(fields);
+			let fieldsList, fieldsArr;
+			fieldsList = document.querySelectorAll(DOMStrings.inputDescription+ ', ' + DOMStrings.inputValue);
+			fieldsArr = Array.prototype.slice.call(fieldsList);
 			fieldsArr.forEach(function(element, i, arr) {
 				element.value = "";
 			});
 			fieldsArr[0].focus();
+		},
+		displayBudget: function(obj) {
+
+			document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+			document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
+			document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalsExp;
+			
+
+			if(obj.percentage > 0) {
+				document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';			
+			} else {
+				document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage = '---';
+			}
 		},
 		getDOMStrings: function() {
 			return DOMStrings;
@@ -159,7 +177,8 @@ let UIController = ( function() {
 let controller = ( function( budgetCtrl, UICtrl) {
 	let setupEventListeners = function() {
 		let DOM = UICtrl.getDOMStrings();
-		document.querySelector(DOM.inputButton).addEventListener('click', ctrlAddItem);	
+		document.querySelector(DOM.inputButton).addEventListener('click', ctrlAddItem);
+		document.querySelector(DOM.container).addEventListener(ctrlDeleteItem);	
 		document.addEventListener('keypress', function(e) {
 			if(e.keyCode === 13 || e.which === 13) {
 			ctrlAddItem();
@@ -175,7 +194,7 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		let budget = budgetCtrl.getBudget();
 
 		// 3.) Display the budget on the UI
-		console.log(budget);
+		UICtrl.displayBudget(budget);
 	};
 
 	let ctrlAddItem = function() {
@@ -184,11 +203,11 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		input = UICtrl.getInput();
 
 		// 2.) Add the item to the budget controller
-		if (input.description !== "" && !isNaN(input.value && input.value > 0)) {
+		if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
 		newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
 		// 3.) Add the item to the UI
-		UICtrl.addListitem(newItem, input.type);
+		UICtrl.addListItem(newItem, input.type);
 
 		//4.) Clear input fields
 		UICtrl.clearFields(); 
@@ -196,11 +215,19 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		
 		//5.) update budget
 		updateBudget();
-	};	
+	};
+
+		
 
 	return {
 		init: function() {
 			setupEventListeners();
+			UICtrl.displayBudget({
+				budget: 0,
+				totalInc: 0,
+				totalExp: 0,
+				percentage: -1
+			});
 		}
 	};
 
