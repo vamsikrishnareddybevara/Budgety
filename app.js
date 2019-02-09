@@ -63,6 +63,16 @@ let budgetController = ( function() {
 
 			return newItem;
 		},
+		deleteItem: function(type, id) {
+			let ids, index;
+			// ids = [2, 4, 6, 8]
+			ids =  data.allItems[type].map( function(element) {
+				return element.id;
+			});
+			index = ids.indexOf(id);
+
+		},
+
 
 		calculateBudget: function() {
 
@@ -231,6 +241,7 @@ let controller = ( function( budgetCtrl, UICtrl) {
 
 
 			// Delete the item from the UI
+
 
 			// update and show the budget 
 		}
