@@ -256,6 +256,7 @@ let controller = ( function( budgetCtrl, UICtrl) {
 			UICtrl.deleteListItem(itemID);
 
 			// update and show the budget 
+			updateBudget();
 		}
 
 	};
