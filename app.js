@@ -127,10 +127,10 @@ let UIController = ( function() {
 
 			if (type === 'exp') {
 				element = DOMStrings.expensesContainer;
-			html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+			html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
 		} else if (type === 'inc') {
 			element = DOMStrings.incomeContainer;
-			html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+			html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
 		}
 			// Replace the place holder text with actual data
 
@@ -178,7 +178,7 @@ let controller = ( function( budgetCtrl, UICtrl) {
 	let setupEventListeners = function() {
 		let DOM = UICtrl.getDOMStrings();
 		document.querySelector(DOM.inputButton).addEventListener('click', ctrlAddItem);
-		document.querySelector(DOM.container).addEventListener(ctrlDeleteItem);	
+		document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);	
 		document.addEventListener('keypress', function(e) {
 			if(e.keyCode === 13 || e.which === 13) {
 			ctrlAddItem();
@@ -217,7 +217,25 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		updateBudget();
 	};
 
-		
+	let ctrlDeleteItem =  function(e) {
+		let itemID, splitID, type, ID;
+
+		itemID = e.target.parentNode.parentNode.parentNode.parentNode.id;
+
+		if(itemID) {
+			splitID = itemID.split('-');
+			type = splitID[0];
+			ID = splitID[1];
+
+			// Delete the item from the data structure
+
+
+			// Delete the item from the UI
+
+			// update and show the budget 
+		}
+
+	};
 
 	return {
 		init: function() {
