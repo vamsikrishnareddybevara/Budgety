@@ -110,7 +110,7 @@ let budgetController = ( function() {
 		},
 		calculateExpensesPercentage: function() {
 			data.allItems.exp.forEach( function(element) {
-				element.calcExpPercentage();
+				element.calcExpPercentage(data.totals.inc);
 			});
 		},
 
@@ -251,7 +251,7 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		budgetCtrl.calculateExpensesPercentage();
 
 		// 2.) Read the percentages from the budget controller
-		let allPercentages = budgetCtrl.getExpensesPercentages();
+		let allPercentages = budgetCtrl.getExpensesPercentages(); 
 
 		// 3.) Update the UI with the new percentages
 
