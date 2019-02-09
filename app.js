@@ -6,12 +6,25 @@ let budgetController = ( function() {
 		this.id = id;
 		this.description = description;
 		this.value = value;
+		this.percentage = -1;
 	};
 
 	let Incomes = function(id, description, value) {
 		this.id = id;
 		this.description = description;
 		this.value = value;
+	};
+
+	Expenses.prototype.calcExpPercentage = function(totalIncome) {
+		if(totalIncome > 0) {
+		this.percentage = Math.floor( (this.value / totalIncome)*100);		
+		} else {
+			this.percentage = -1;
+		}
+	};
+
+	Expenses.prototype.getExpPercentage = function() {
+		return this.percentage; 
 	};
 
 	let data = {
@@ -94,6 +107,20 @@ let budgetController = ( function() {
 			} else {
 				data.percentage = -1;
 			}
+		},
+		calculateExpensesPercentage: function() {
+			data.allItems.exp.forEach( function(element) {
+				element.calcExpPercentage();
+			});
+		},
+
+		getExpensesPercentages: function() {
+			let allPerc;
+			allPerc = data.allItems.exp.map( function(element) {
+				return element.getExpPercentage();
+			});
+
+			return allPerc;
 		},
 		getBudget: function() {
 			return {
@@ -219,6 +246,17 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		UICtrl.displayBudget(budget);
 	};
 
+	let updateExpensesPercentage = function() {
+		// 1.) Calculate the percentage
+		budgetCtrl.calculateExpensesPercentage();
+
+		// 2.) Read the percentages from the budget controller
+		let allPercentages = budgetCtrl.getExpensesPercentages();
+
+		// 3.) Update the UI with the new percentages
+
+	};
+
 	let ctrlAddItem = function() {
 		let input, newItem;
 		// 1.) Get the filled input data
@@ -237,6 +275,8 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		
 		//5.) update budget
 		updateBudget();
+
+		//6.) update expenses percentage
 	};
 
 	let ctrlDeleteItem =  function(e) {
@@ -249,14 +289,17 @@ let controller = ( function( budgetCtrl, UICtrl) {
 			type = splitID[0];
 			ID = parseInt(splitID[1]);
 
-			// Delete the item from the data structure
+			//1.) Delete the item from the data structure
 			budgetCtrl.deleteItem(type, ID);
 
-			// Delete the item from the UI
+			//2.) Delete the item from the UI
 			UICtrl.deleteListItem(itemID);
 
-			// update and show the budget 
+			//3.) update and show the budget 
 			updateBudget();
+
+			//4.) update expenses percentage
+
 		}
 
 	};
