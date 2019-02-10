@@ -150,7 +150,8 @@ let UIController = ( function() {
 		incomeLabel: '.budget__income--value',
 		expensesLabel: '.budget__expenses--value',
 		percentageLabel: '.budget__expenses--percentage',
-		container: '.container'
+		container: '.container',
+		expensesPercLabel: '.item__percentage'
 	}
  
 
@@ -214,6 +215,25 @@ let UIController = ( function() {
 				document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage = '---';
 			}
 		},
+
+
+		displayPercentages: function(percentages) {
+			let fields = document.querySelectorAll(DOMStrings.expensesPercLabel);
+			let nodeListForEach =  function(list, callback) {
+				for( let i = 0; i < list.length; i++) {
+					callback(list[i], i);
+				}
+			};
+
+			nodeListForEach(fields, function(element, index) {
+				if(percentages[index] > 0) {
+					element.textContent = percentages[index] + '%';
+				} else {
+					element.textContent = '---';
+
+				}
+			});
+		},
 		getDOMStrings: function() {
 			return DOMStrings;
 		}
@@ -251,9 +271,10 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		budgetCtrl.calculateExpensesPercentage();
 
 		// 2.) Read the percentages from the budget controller
-		let allPercentages = budgetCtrl.getExpensesPercentages(); 
+		let percentages = budgetCtrl.getExpensesPercentages(); 
 
 		// 3.) Update the UI with the new percentages
+		UICtrl.displayPercentages(percentages);
 
 	};
 
@@ -276,7 +297,9 @@ let controller = ( function( budgetCtrl, UICtrl) {
 		//5.) update budget
 		updateBudget();
 
-		//6.) update expenses percentage
+		//6.) Calculate and update expenses percentage
+		updateExpensesPercentage();
+
 	};
 
 	let ctrlDeleteItem =  function(e) {
@@ -298,8 +321,8 @@ let controller = ( function( budgetCtrl, UICtrl) {
 			//3.) update and show the budget 
 			updateBudget();
 
-			//4.) update expenses percentage
-
+			//4.) Calculate and update expenses percentage
+			updateExpensesPercentage();
 		}
 
 	};
