@@ -1,5 +1,4 @@
 // Budget Controller
-
 let budgetController = ( function() {
 
 	let Expenses = function(id, description, value) {
@@ -154,34 +153,38 @@ let UIController = ( function() {
 		expensesPercLabel: '.item__percentage',
 		dateLabel: '.budget__title--month'
 	};
-let formatNumber = function(num, type) {
+	let formatNumber = function(num, type) {
 
-			let numSplit, int, dec;
-			/* 
-				+ or - before number
-				exactly 2 decimal points
-				comma seperating the thousands
+	let numSplit, int, dec;
+		/* 
+			+ or - before number
+			exactly 2 decimal points
+			comma seperating the thousands
 
-				2305.567 ---> 2,305.56
-				2000 ---> 2,000.00
-			*/
+			2305.567 ---> 2,305.56
+			2000 ---> 2,000.00
+		*/
 
-			num = Math.abs(num);
-			num = num.toFixed(2);
+	num = Math.abs(num);
+	num = num.toFixed(2);
 
-			numSplit = num.split('.');
+	numSplit = num.split('.');
 
-			int = numSplit[0];
-			if(int.length > 3) {
-				int = int.substr(0, int.length-3) + ',' + int.substr(int.length-3, 3) 
+	int = numSplit[0];
+	if(int.length > 3) {
+		int = int.substr(0, int.length-3) + ',' + int.substr(int.length-3, 3) 
+	}
+
+		dec = numSplit[1];
+
+		return (type === 'exp'? '-': '+') +  ' ' + int + '.' + dec;
+	};
+
+	let nodeListForEach =  function(list, callback) {
+			for( let i = 0; i < list.length; i++) {
+				callback(list[i], i);
 			}
-
-			dec = numSplit[1];
-
-			return (type === 'exp'? '-': '+') +  ' ' + int + '.' + dec;
 		};
-
- 
 
 
 	return {
@@ -248,12 +251,6 @@ let formatNumber = function(num, type) {
 
 		displayPercentages: function(percentages) {
 			let fields = document.querySelectorAll(DOMStrings.expensesPercLabel);
-			let nodeListForEach =  function(list, callback) {
-				for( let i = 0; i < list.length; i++) {
-					callback(list[i], i);
-				}
-			};
-
 			nodeListForEach(fields, function(element, index) {
 				if(percentages[index] > 0) {
 					element.textContent = percentages[index] + '%';
@@ -272,6 +269,14 @@ let formatNumber = function(num, type) {
 			 document.querySelector(DOMStrings.dateLabel).textContent = monthsArray[month] + ', ' + year;
 
 		},
+		changedType: function() {
+			let fields = document.querySelectorAll(DOMStrings.inputType + ',' + DOMStrings.inputDescription + ',' + DOMStrings.inputValue);
+			nodeListForEach(fields, function(element) {
+				element.classList.toggle('red-focus');
+			});
+			document.querySelector(DOMStrings.inputButton).classList.toggle('red');
+
+		},
 		getDOMStrings: function() {
 			return DOMStrings;
 		}
@@ -285,7 +290,8 @@ let controller = ( function( budgetCtrl, UICtrl) {
 	let setupEventListeners = function() {
 		let DOM = UICtrl.getDOMStrings();
 		document.querySelector(DOM.inputButton).addEventListener('click', ctrlAddItem);
-		document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);	
+		document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+		document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);	
 		document.addEventListener('keypress', function(e) {
 			if(e.keyCode === 13 || e.which === 13) {
 			ctrlAddItem();
